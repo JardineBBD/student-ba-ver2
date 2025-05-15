@@ -111,6 +111,31 @@
             </form>
         </div>
         
+        <!-- ส่วนแสดงการจองของห้องที่เลือก -->
+        <div id="labBookingInfo" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+            <h2 class="text-2xl font-bold mb-4">ตารางการจองห้อง <span id="selectedLabName"></span></h2>
+            
+            <div class="mb-4">
+                <p class="text-gray-600">ตารางแสดงเวลาที่มีการจองแล้ว</p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b text-left">วันที่</th>
+                            <th class="py-2 px-4 border-b text-left">เวลา</th>
+                        </tr>
+                    </thead>
+                    <tbody id="labBookingsTable">
+                        <tr>
+                            <td colspan="2" class="py-4 text-center text-gray-500">ไม่มีข้อมูลการจอง</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
         <!-- ส่วนประวัติการจอง -->
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold mb-6">ประวัติการจอง</h2>
@@ -253,6 +278,98 @@
                     labSelect.appendChild(option);
                 });
             }
+            
+            // เพิ่ม event listener เมื่อเลือกห้องแลป
+            labSelect.addEventListener('change', function() {
+                if (this.value) {
+                    showLabBookings(this.value);
+                } else {
+                    hideLabBookings();
+                }
+            });
+        }
+        
+        // แสดงข้อมูลการจองของห้องที่เลือก
+        function showLabBookings(labRoom) {
+            // แสดงส่วนข้อมูลการจองห้อง
+            document.getElementById('labBookingInfo').classList.remove('hidden');
+            document.getElementById('selectedLabName').textContent = labRoom;
+            
+            // ดึงข้อมูลการจองทั้งหมด
+            const bookings = JSON.parse(localStorage.getItem('multispace_bookings')) || [];
+            
+            // กรองการจองของห้องที่เลือก - แสดงเฉพาะรายการที่อนุมัติหรือรอการอนุมัติ
+            const labBookings = bookings.filter(booking => 
+                booking.lab === labRoom && booking.status !== 'rejected'
+            );
+            
+            // แสดงข้อมูลการจอง
+            const bookingsTable = document.getElementById('labBookingsTable');
+            
+            if (labBookings.length === 0) {
+                bookingsTable.innerHTML = `
+                    <tr>
+                        <td colspan="2" class="py-4 text-center text-gray-500">ไม่มีข้อมูลการจอง</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // เรียงลำดับตามวันที่และเวลา
+            labBookings.sort((a, b) => {
+                if (a.date !== b.date) {
+                    return new Date(a.date) - new Date(b.date);
+                }
+                return a.time.localeCompare(b.time);
+            });
+            
+            bookingsTable.innerHTML = '';
+            
+            labBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="py-3 px-4 border-b">${formatDate(booking.date)}</td>
+                    <td class="py-3 px-4 border-b">${booking.time}</td>
+                `;
+                bookingsTable.appendChild(row);
+            });
+            
+            // ตรวจสอบการจองซ้ำเมื่อเลือกวันที่และเวลา
+            document.getElementById('bookingDate').addEventListener('change', checkBookingAvailability);
+            document.getElementById('bookingTime').addEventListener('change', checkBookingAvailability);
+        }
+        
+        // ซ่อนข้อมูลการจองห้อง
+        function hideLabBookings() {
+            document.getElementById('labBookingInfo').classList.add('hidden');
+        }
+        
+        // ตรวจสอบว่ามีการจองซ้ำหรือไม่
+        function checkBookingAvailability() {
+            const lab = document.getElementById('bookingLab').value;
+            const date = document.getElementById('bookingDate').value;
+            const time = document.getElementById('bookingTime').value;
+            
+            if (!lab || !date || !time) return;
+            
+            // ดึงข้อมูลการจองทั้งหมด
+            const bookings = JSON.parse(localStorage.getItem('multispace_bookings')) || [];
+            
+            // ตรวจสอบว่ามีการจองซ้ำหรือไม่
+            const isBooked = bookings.some(booking => 
+                booking.lab === lab && 
+                booking.date === date && 
+                booking.time === time &&
+                booking.status !== 'rejected'
+            );
+            
+            const errorMsgEl = document.getElementById('bookingError');
+            errorMsgEl.classList.add('hidden');
+            
+            if (isBooked) {
+                errorMsgEl.textContent = `ห้อง ${lab} ในวันที่ ${formatDate(date)} เวลา ${time} ถูกจองแล้ว`;
+                errorMsgEl.classList.remove('hidden');
+            }
         }
         
         // โหลดประวัติการจอง
@@ -381,6 +498,11 @@
             
             // โหลดประวัติการจองใหม่
             loadBookingHistory(currentUser.studentId);
+            
+            // อัปเดตข้อมูลการจองของห้อง
+            if (lab) {
+                showLabBookings(lab);
+            }
         });
         
         // แปลงรูปแบบวันที่
