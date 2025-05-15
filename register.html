@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiSpace MU - ลงทะเบียนใช้งาน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-prompt">
+    <div class="flex h-screen">
+        <!-- ฝั่งซ้าย: ส่วนลงทะเบียน -->
+        <div class="w-full md:w-1/2 bg-blue-800 text-white flex flex-col justify-between p-8">
+            <div class="max-w-md mx-auto w-full">
+                <div class="text-center md:text-left pt-4 pb-6">
+                    <h1 class="text-2xl font-bold mb-2">ลงทะเบียนใช้งาน<br>MultiSpace MU</h1>
+                    <div class="h-1 w-64 bg-white my-4 mx-auto md:mx-0"></div>
+                </div>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="bg-blue-700 rounded-full p-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <div id="registerSuccess" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 hidden"></div>
+                <div id="registerError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 hidden"></div>
+                
+                <form id="registerForm">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <input 
+                                type="text" 
+                                id="regFirstName" 
+                                class="w-full p-3 rounded text-gray-800" 
+                                placeholder="ชื่อ"
+                                required
+                            >
+                        </div>
+                        <div>
+                            <input 
+                                type="text" 
+                                id="regLastName" 
+                                class="w-full p-3 rounded text-gray-800" 
+                                placeholder="นามสกุล"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input 
+                            type="text" 
+                            id="regStudentId" 
+                            class="w-full p-3 rounded text-gray-800" 
+                            placeholder="รหัสนักศึกษา"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="mb-4">
+                        <select id="regDepartment" class="w-full p-3 rounded text-gray-800" required>
+                            <option value="" disabled selected>-- เลือกคณะ --</option>
+                            <option value="วิศวกรรมโยธา">วิศวกรรมโยธา</option>
+                            <option value="วิศวกรรมอุตสาหการ">วิศวกรรมอุตสาหการ</option>
+                            <option value="วิศวกรรมเคมี">วิศวกรรมเคมี</option>
+                            <option value="วิศวกรรมชีวการแพทย์">วิศวกรรมชีวการแพทย์</option>
+                            <option value="วิศวกรรมเครื่องกล">วิศวกรรมเครื่องกล</option>
+                            <option value="วิศวกรรมคอมพิวเตอร์">วิศวกรรมคอมพิวเตอร์</option>
+                            <option value="วิศวกรรมไฟฟ้า">วิศวกรรมไฟฟ้า</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input 
+                            type="email" 
+                            id="regEmail" 
+                            class="w-full p-3 rounded text-gray-800" 
+                            placeholder="อีเมล"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input 
+                            type="password" 
+                            id="regPassword" 
+                            class="w-full p-3 rounded text-gray-800" 
+                            placeholder="รหัสผ่าน"
+                            required
+                            minlength="8"
+                        >
+                    </div>
+                    
+                    <div class="mb-6">
+                        <input 
+                            type="password" 
+                            id="regConfirmPassword" 
+                            class="w-full p-3 rounded text-gray-800" 
+                            placeholder="ยืนยันรหัสผ่าน"
+                            required
+                        >
+                    </div>
+                    
+                    <button 
+                        type="submit"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded font-medium text-lg"
+                    >
+                        ยืนยันการลงทะเบียน
+                    </button>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <a href="index.html" class="text-white hover:underline">กลับไปหน้าเข้าสู่ระบบ</a>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center md:text-left">
+                <a href="#" class="text-white hover:underline">Contact staff for assistance.</a>
+            </div>
+        </div>
+        
+        <!-- ฝั่งขวา: รูปภาพ -->
+        <div class="hidden md:block md:w-1/2 bg-cover bg-center relative" style="background-image: url('https://architizer-prod.imgix.net/media/1442286590722CHE_5708.jpg?w=1680&q=60&auto=format,compress&cs=strip')">
+            <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+            <div class="absolute top-4 right-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Mahidol_U.png/800px-Mahidol_U.png" alt="Mahidol University Logo" class="h-16">
+            </div>
+            <div class="absolute bottom-4 right-8 text-white text-xl font-bold">
+                MAHIDOL UNIVERSITY
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // จัดการข้อมูลผู้ใช้ในระบบด้วย localStorage
+        const users = JSON.parse(localStorage.getItem('multispace_users')) || [];
+        
+        // ฟอร์มลงทะเบียน
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // รับค่าจากฟอร์ม
+            const firstName = document.getElementById('regFirstName').value;
+            const lastName = document.getElementById('regLastName').value;
+            const name = `${firstName} ${lastName}`;
+            const studentId = document.getElementById('regStudentId').value;
+            const department = document.getElementById('regDepartment').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            // ตรวจสอบข้อมูล
+            const errorMsgEl = document.getElementById('registerError');
+            const successMsgEl = document.getElementById('registerSuccess');
+            
+            errorMsgEl.classList.add('hidden');
+            successMsgEl.classList.add('hidden');
+            
+            // ตรวจสอบว่ารหัสผ่านตรงกัน
+            if (password !== confirmPassword) {
+                errorMsgEl.textContent = 'รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง';
+                errorMsgEl.classList.remove('hidden');
+                return;
+            }
+            
+            // ตรวจสอบว่า studentId ซ้ำหรือไม่
+            if (users.some(user => user.studentId === studentId)) {
+                errorMsgEl.textContent = 'รหัสนักศึกษา/บุคลากรนี้มีในระบบแล้ว กรุณาใช้รหัสอื่น';
+                errorMsgEl.classList.remove('hidden');
+                return;
+            }
+            
+            // เพิ่มผู้ใช้ใหม่
+            const newUser = {
+                studentId,
+                name,
+                department,
+                email,
+                password
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('multispace_users', JSON.stringify(users));
+            
+            // แสดงข้อความสำเร็จ
+            successMsgEl.textContent = 'สมัครสมาชิกสำเร็จ! คุณสามารถเข้าสู่ระบบได้ทันที';
+            successMsgEl.classList.remove('hidden');
+            
+            // รีเซ็ตฟอร์ม
+            document.getElementById('registerForm').reset();
+            
+            // ไปยังหน้า login หลังจาก 2 วินาที
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

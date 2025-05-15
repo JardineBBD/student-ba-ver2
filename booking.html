@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiSpace MU - ระบบจองห้องแลป</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 font-prompt">
+    <!-- Header -->
+    <header class="bg-blue-800 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="Mahidol_U.png" alt="Logo" class="h-10 mr-3">
+                <h1 class="text-2xl font-bold">MultiSpace MU - ระบบจองห้องแลป</h1>
+            </div>
+            <div class="flex items-center">
+                <span id="userInfo" class="mr-4">กำลังโหลด...</span>
+                <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                    ออกจากระบบ
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8 px-4">
+        <!-- ส่วนข้อมูลผู้ใช้ -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4" id="welcomeMessage">ยินดีต้อนรับ</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <p class="text-gray-600 mb-1">รหัสนักศึกษา/บุคลากร:</p>
+                    <p class="font-medium" id="displayStudentId">-</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 mb-1">ชื่อ-นามสกุล:</p>
+                    <p class="font-medium" id="displayName">-</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 mb-1">สาขาวิชา:</p>
+                    <p class="font-medium" id="displayDepartment">-</p>
+                </div>
+                <div>
+                    <p class="text-gray-600 mb-1">อีเมล:</p>
+                    <p class="font-medium" id="displayEmail">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ส่วนจองห้องแลป -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-6">จองห้องแลป</h2>
+            
+            <div id="bookingSuccess" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 hidden"></div>
+            <div id="bookingError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 hidden"></div>
+            
+            <form id="bookingForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div>
+                        <label for="bookingLab" class="block text-gray-700 mb-2">ห้องแลป:</label>
+                        <select id="bookingLab" class="w-full p-3 border rounded" required>
+                            <option value="" disabled selected>เลือกห้องแลป</option>
+                            <!-- ตัวเลือกห้องแลปจะถูกเพิ่มด้วย JavaScript ตามสาขาวิชา -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="bookingDate" class="block text-gray-700 mb-2">วันที่:</label>
+                        <input 
+                            type="date" 
+                            id="bookingDate" 
+                            class="w-full p-3 border rounded" 
+                            required
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="bookingTime" class="block text-gray-700 mb-2">เวลา:</label>
+                        <select id="bookingTime" class="w-full p-3 border rounded" required>
+                            <option value="" disabled selected>เลือกเวลา</option>
+                            <option value="09:00-10:00">09:00 - 10:00</option>
+                            <option value="10:00-11:00">10:00 - 11:00</option>
+                            <option value="11:00-12:00">11:00 - 12:00</option>
+                            <option value="13:00-14:00">13:00 - 14:00</option>
+                            <option value="14:00-15:00">14:00 - 15:00</option>
+                            <option value="15:00-16:00">15:00 - 16:00</option>
+                            <option value="16:00-17:00">16:00 - 17:00</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="bookingPurpose" class="block text-gray-700 mb-2">วัตถุประสงค์:</label>
+                        <textarea 
+                            id="bookingPurpose" 
+                            class="w-full p-3 border rounded"
+                            rows="3"
+                            placeholder="ระบุวัตถุประสงค์ในการใช้ห้องแลป"
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+                
+                <button 
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded font-medium"
+                >
+                    ส่งคำขอจองห้องแลป
+                </button>
+            </form>
+        </div>
+        
+        <!-- ส่วนประวัติการจอง -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6">ประวัติการจอง</h2>
+            
+            <div class="mb-4 flex flex-wrap gap-4">
+                <div class="flex items-center">
+                    <span class="inline-block w-4 h-4 bg-yellow-200 rounded-full mr-2"></span>
+                    <span>รอการอนุมัติ</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="inline-block w-4 h-4 bg-green-200 rounded-full mr-2"></span>
+                    <span>อนุมัติแล้ว</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="inline-block w-4 h-4 bg-red-200 rounded-full mr-2"></span>
+                    <span>ปฏิเสธแล้ว</span>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b text-left">ห้องแลป</th>
+                            <th class="py-2 px-4 border-b text-left">วันที่</th>
+                            <th class="py-2 px-4 border-b text-left">เวลา</th>
+                            <th class="py-2 px-4 border-b text-left">วัตถุประสงค์</th>
+                            <th class="py-2 px-4 border-b text-left">สถานะ</th>
+                            <th class="py-2 px-4 border-b text-left">หมายเหตุ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingHistoryTable">
+                        <!-- ข้อมูลประวัติการจองจะถูกเพิ่มด้วย JavaScript -->
+                        <tr>
+                            <td colspan="6" class="py-4 text-center text-gray-500">ไม่มีประวัติการจอง</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="bg-gray-800 text-white p-6 mt-12">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4">MultiSpace MU</h3>
+                    <p>ระบบจองห้องแลปออนไลน์ คณะวิศวกรรมศาสตร์</p>
+                    <p>มหาวิทยาลัยมหิดล วิทยาเขตศาลายา</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">ติดต่อเรา</h3>
+                    <p>คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหิดล</p>
+                    <p>25/25 ถ.พุทธมณฑลสาย 4 ต.ศาลายา</p>
+                    <p>อ.พุทธมณฑล จ.นครปฐม 73170</p>
+                    <p>โทร. 02-889-2138</p>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <p>&copy; 2023 คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหิดล. สงวนลิขสิทธิ์.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ตรวจสอบการล็อกอิน
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('multispace_current_user')) || 
+                                JSON.parse(sessionStorage.getItem('multispace_current_user'));
+            
+            if (!currentUser) {
+                // ถ้ายังไม่ได้ล็อกอิน ให้กลับไปหน้า login
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // แสดงข้อมูลผู้ใช้
+            document.getElementById('userInfo').textContent = `${currentUser.studentId} - ${currentUser.name}`;
+            document.getElementById('welcomeMessage').textContent = `ยินดีต้อนรับ ${currentUser.name}`;
+            document.getElementById('displayStudentId').textContent = currentUser.studentId;
+            document.getElementById('displayName').textContent = currentUser.name;
+            document.getElementById('displayDepartment').textContent = currentUser.department || '-';
+            document.getElementById('displayEmail').textContent = currentUser.email || '-';
+            
+            // โหลดห้องแลปตามสาขาวิชา
+            loadLabRooms(currentUser.department);
+            
+            // โหลดประวัติการจอง
+            loadBookingHistory(currentUser.studentId);
+            
+            // ตั้งค่าวันที่ขั้นต่ำสำหรับการจอง (วันนี้เป็นต้นไป)
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('bookingDate').min = formattedDate;
+        });
+        
+        // ล็อกเอาท์
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            // ลบข้อมูลผู้ใช้งานปัจจุบัน
+            localStorage.removeItem('multispace_current_user');
+            sessionStorage.removeItem('multispace_current_user');
+            
+            // กลับไปหน้า login
+            window.location.href = 'index.html';
+        });
+        
+        // โหลดห้องแลปตามสาขาวิชา
+        function loadLabRooms(department) {
+            const labSelect = document.getElementById('bookingLab');
+            labSelect.innerHTML = '<option value="" disabled selected>เลือกห้องแลป</option>';
+            
+            // รายการห้องแลปตามสาขาวิชา
+            const labRooms = {
+                'วิศวกรรมโยธา': ['CE101', 'CE102', 'CE103', 'CE104', 'CE105'],
+                'วิศวกรรมอุตสาหการ': ['IE101', 'IE102', 'IE103', 'IE104', 'IE105'],
+                'วิศวกรรมเคมี': ['CHE101', 'CHE102', 'CHE103', 'CHE104', 'CHE105'],
+                'วิศวกรรมชีวการแพทย์': ['BME101', 'BME102', 'BME103', 'BME104', 'BME105'],
+                'วิศวกรรมเครื่องกล': ['ME101', 'ME102', 'ME103', 'ME104', 'ME105'],
+                'วิศวกรรมคอมพิวเตอร์': ['CO101', 'CO102', 'CO103', 'CO104', 'CO105'],
+                'วิศวกรรมไฟฟ้า': ['EE101', 'EE102', 'EE103', 'EE104', 'EE105']
+            };
+            
+            // ถ้าไม่มีสาขาวิชาหรือเป็นแอดมิน ให้แสดงห้องทั้งหมด
+            if (!department || department === '') {
+                Object.values(labRooms).forEach(rooms => {
+                    rooms.forEach(room => {
+                        const option = document.createElement('option');
+                        option.value = room;
+                        option.textContent = room;
+                        labSelect.appendChild(option);
+                    });
+                });
+            } else {
+                // แสดงเฉพาะห้องในสาขาวิชา
+                const rooms = labRooms[department] || [];
+                rooms.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room;
+                    option.textContent = room;
+                    labSelect.appendChild(option);
+                });
+            }
+        }
+        
+        // โหลดประวัติการจอง
+        function loadBookingHistory(studentId) {
+            // ดึงข้อมูลการจองจาก localStorage
+            const bookings = JSON.parse(localStorage.getItem('multispace_bookings')) || [];
+            
+            // กรองเฉพาะการจองของผู้ใช้
+            const userBookings = bookings.filter(booking => booking.studentId === studentId);
+            
+            const historyTable = document.getElementById('bookingHistoryTable');
+            
+            if (userBookings.length === 0) {
+                historyTable.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-4 text-center text-gray-500">ไม่มีประวัติการจอง</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // เรียงลำดับตามวันที่ล่าสุด
+            userBookings.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            historyTable.innerHTML = '';
+            userBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                
+                // เพิ่มสีพื้นหลังตามสถานะ
+                if (booking.status === 'approved') {
+                    row.classList.add('bg-green-50');
+                } else if (booking.status === 'rejected') {
+                    row.classList.add('bg-red-50');
+                } else {
+                    row.classList.add('bg-yellow-50');
+                }
+                
+                // แปลงสถานะเป็นภาษาไทย
+                let statusText = '';
+                if (booking.status === 'pending') {
+                    statusText = 'รอการอนุมัติ';
+                } else if (booking.status === 'approved') {
+                    statusText = 'อนุมัติแล้ว';
+                } else if (booking.status === 'rejected') {
+                    statusText = 'ปฏิเสธแล้ว';
+                }
+                
+                row.innerHTML = `
+                    <td class="py-3 px-4 border-b">${booking.lab}</td>
+                    <td class="py-3 px-4 border-b">${formatDate(booking.date)}</td>
+                    <td class="py-3 px-4 border-b">${booking.time}</td>
+                    <td class="py-3 px-4 border-b">${booking.purpose}</td>
+                    <td class="py-3 px-4 border-b">${statusText}</td>
+                    <td class="py-3 px-4 border-b">${booking.rejectReason || '-'}</td>
+                `;
+                
+                historyTable.appendChild(row);
+            });
+        }
+        
+        // ส่งคำขอจองห้อง
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentUser = JSON.parse(localStorage.getItem('multispace_current_user')) || 
+                                JSON.parse(sessionStorage.getItem('multispace_current_user'));
+            
+            if (!currentUser) {
+                alert('กรุณาเข้าสู่ระบบก่อนทำการจอง');
+                return;
+            }
+            
+            // รับค่าจากฟอร์ม
+            const lab = document.getElementById('bookingLab').value;
+            const date = document.getElementById('bookingDate').value;
+            const time = document.getElementById('bookingTime').value;
+            const purpose = document.getElementById('bookingPurpose').value;
+            
+            // ดึงข้อมูลการจองเดิม
+            const bookings = JSON.parse(localStorage.getItem('multispace_bookings')) || [];
+            
+            // ตรวจสอบว่ามีการจองซ้ำหรือไม่
+            const isBooked = bookings.some(booking => 
+                booking.lab === lab && 
+                booking.date === date && 
+                booking.time === time &&
+                booking.status !== 'rejected'
+            );
+            
+            const successMsgEl = document.getElementById('bookingSuccess');
+            const errorMsgEl = document.getElementById('bookingError');
+            
+            successMsgEl.classList.add('hidden');
+            errorMsgEl.classList.add('hidden');
+            
+            if (isBooked) {
+                errorMsgEl.textContent = `ห้อง ${lab} ในวันที่ ${formatDate(date)} เวลา ${time} ถูกจองแล้ว`;
+                errorMsgEl.classList.remove('hidden');
+                return;
+            }
+            
+            // สร้างข้อมูลการจองใหม่
+            const newBooking = {
+                id: Date.now(), // ใช้ timestamp เป็น ID
+                studentId: currentUser.studentId,
+                name: currentUser.name,
+                department: currentUser.department,
+                lab,
+                date,
+                time,
+                purpose,
+                status: 'pending', // pending, approved, rejected
+                createdAt: new Date().toISOString()
+            };
+            
+            // เพิ่มการจองใหม่
+            bookings.push(newBooking);
+            localStorage.setItem('multispace_bookings', JSON.stringify(bookings));
+            
+            // แสดงข้อความสำเร็จ
+            successMsgEl.textContent = `ส่งคำขอจองห้อง ${lab} สำเร็จ! โปรดรอการอนุมัติจากเจ้าหน้าที่`;
+            successMsgEl.classList.remove('hidden');
+            
+            // รีเซ็ตฟอร์ม
+            document.getElementById('bookingForm').reset();
+            
+            // โหลดประวัติการจองใหม่
+            loadBookingHistory(currentUser.studentId);
+        });
+        
+        // แปลงรูปแบบวันที่
+        function formatDate(dateString) {
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year}`;
+        }
+    </script>
+</body>
+</html>

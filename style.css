@@ -1,0 +1,98 @@
+body {
+    font-family: 'Kanit', 'Prompt', sans-serif;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.department-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.department-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .w-1/2 {
+        width: 100%;
+    }
+}
+
+/* เพิ่มสไตล์สำหรับหน้า admin */
+.font-prompt {
+    font-family: 'Prompt', 'Kanit', sans-serif;
+}
+
+/* สีพื้นหลังตามสถานะ */
+.bg-yellow-50 {
+    background-color: #fffbeb;
+}
+
+.bg-green-50, .bg-green-100 {
+    background-color: #dcfce7;
+}
+
+.bg-red-50, .bg-red-100 {
+    background-color: #fee2e2;
+}
+
+/* Modal animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#rejectModal {
+    animation: fadeIn 0.3s;
+}
+
+/* เพิ่มสไตล์สำหรับหน้า login และ register */
+.login-bg {
+    background-size: cover;
+    background-position: center;
+}
+
+.btn-login {
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.5s ease-out;
+}
